@@ -1,10 +1,3 @@
-import axios from "axios";
-axios.get('/users')
-  .then(res => {
-    console.log(res.data);
-  });
-  
-
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
@@ -33,10 +26,11 @@ const hideLoader = () => {
   loaderEl.classList.add('is-hidden');
 };
 
-const onSearchFormSubmit = event => {
-    event.preventDefault();
+const onSearchFormSubmit = async event => {
+  try {
+   event.preventDefault();
 
-    const searchedValue = searchFormEl.elements.user_query.value.trim();
+   const searchedValue = searchFormEl.elements.user_query.value.trim();
       if (!searchedValue) {
       iziToast.error({
         message: 'Please enter a search query.',
@@ -44,26 +38,32 @@ const onSearchFormSubmit = event => {
       });
       return;
     }
-     showLoader();
-    fetchPhotos(searchedValue).then(data => {
-        hideLoader();
-        if (data.hits.length === 0) {
-           iziToast.error({
-               message: 'Sorry, there are no images matching your search query. Please try again!',
-               position: 'topRight',
-});
-            galleryEl.innerHTML = '';
-            searchFormEl.reset();
-            return;
-        };
-        const galleryCardsTemplate = data.hits.map(imgDetails => createGalleryCardTemplate(imgDetails)).join('');
+
+    showLoader();
+    
+    const response = await fetchPhotos(searchedValue);
+
+    console.log(response);
+
+    hideLoader();
+    
+    if (response.data.hits.length === 0) {
+      iziToast.error({
+        message: 'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topRight',
+      });
+      galleryEl.innerHTML = '';
+      searchFormEl.reset();
+      return;
+    }
+
+  const galleryCardsTemplate = response.data.hits.map(imgDetails => createGalleryCardTemplate(imgDetails)).join('');
         galleryEl.innerHTML = galleryCardsTemplate;
         lightbox.refresh();
-    }).catch(err => {
-        hideLoader();
-        console.log(err)
-    })
-};
 
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
