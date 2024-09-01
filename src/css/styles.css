@@ -115,10 +115,6 @@ body {
   border-radius: 100px 100px 0 0;
 }
 
-.is-hidden {
-  display: none;
-}
-
 .loader:after {
   content: '';
   position: absolute;
@@ -172,4 +168,29 @@ body {
   100% {
     transform: translateX(0px);
   }
+}
+
+.js-load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  background-color: #4e75ff;
+  margin: 32px auto;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.is-hidden {
+  display: none;
 }

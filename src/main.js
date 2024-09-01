@@ -31,6 +31,25 @@ const hideLoader = () => {
   loaderEl.classList.add('is-hidden');
 };
 
+
+const getCardHeight = () => {
+  const card = document.querySelector('.gallery-card');
+  if (card) {
+    return card.getBoundingClientRect().height;
+  }
+  return 0;
+};
+
+const scrollPage = () => {
+  const cardHeight = getCardHeight();
+  if (cardHeight > 0) {
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth'
+    });
+  }
+};
+
 const onSearchFormSubmit = async event => {
   try {
    event.preventDefault();
@@ -45,10 +64,10 @@ const onSearchFormSubmit = async event => {
     }
 
     currentPage = 1;
+    loadMoreBtnEl.classList.add('is-hidden');
     showLoader();
     
     const response = await fetchPhotos(searchedValue, currentPage);
-    console.log(response);
 
     hideLoader();
     
@@ -81,8 +100,7 @@ const onLoadMoreBtnClick = async event => {
 
     galleryEl.insertAdjacentHTML('beforeend', galleryCardsTemplate);
 
-
-
+    scrollPage();
 
     const totalHits = response.data.totalHits;
     const totalPages = Math.ceil(totalHits / perPage);
